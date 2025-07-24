@@ -1,4 +1,7 @@
 #include <ESP32Servo.h>
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
 
 #define THUMB_PORT 32
 #define INDEX_FINGER_PORT 33
@@ -10,6 +13,9 @@
 #define POT_PIN 25
 
 #define FINGER_COUNT 5
+
+#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
 enum Finger {
   THUMB = 32,
@@ -33,7 +39,7 @@ const float VMAX = (VREF * (POT/(POT+R)));
 const float ADC_MAX = (VMAX/VREF)*ADC_RESOLUTION;
 
 const float ANGLE_MIN = 0;
-const float ANGLE_MAX = 180;
+const float ANGLE_MAX = 130;
 const float ANGLE_ERRO = 10;
 
 Finger ordered_fingers[] = { THUMB, INDEX_FINGER, MIDDLE_FINGER, RING_FINGER, PINKY_FINGER };
@@ -108,6 +114,24 @@ void setup() {
   servo_pinky_finger.attach(PINKY_FINGER_PORT, 500, 2400); // 0° = 500us, 180° = 2400us
 
   analogReadResolution(12);
+
+  Serial.println("Starting BLE work!");
+
+  BLEDevice::init("Prótese Soldado Invernal");
+  BLEServer *pServer = BLEDevice::createServer();
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+  BLECharacteristic *pCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+
+  pCharacteristic->setValue("Hello World says Neil");
+  pService->start();
+  // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
+  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  pAdvertising->addServiceUUID(SERVICE_UUID);
+  pAdvertising->setScanResponse(true);
+  pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
+  pAdvertising->setMinPreferred(0x12);
+  BLEDevice::startAdvertising();
+  Serial.println("Characteristic defined! Now you can read it in your phone!");
 }
 
 void loop() {
