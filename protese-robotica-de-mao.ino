@@ -55,6 +55,14 @@ Servo servo_middle_finger;
 Servo servo_ring_finger;
 Servo servo_pinky_finger;
 
+class MyCallbacks : public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *characteristic) {
+    auto value = characteristic->getValue();
+    Serial.print("Received value: ");
+    Serial.println(value.c_str());
+  }
+};
+
 float* command_to_finger_angle_mapper(enum Command command) {
   switch(command) {
     case CLOSE_HAND:
@@ -120,8 +128,12 @@ void setup() {
   BLEDevice::init("Prótese Soldado Invernal");
   BLEServer *pServer = BLEDevice::createServer();
   BLEService *pService = pServer->createService(SERVICE_UUID);
-  BLECharacteristic *pCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+    CHARACTERISTIC_UUID,
+    BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
+  );
 
+  pCharacteristic->setCallbacks(new MyCallbacks());
   pCharacteristic->setValue("Hello World says Neil");
   pService->start();
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
@@ -138,11 +150,11 @@ void loop() {
   int adcValue = analogRead(POT_PIN); // Lê valor ADC (0–4095)
   float voltage = (adcValue/ADC_MAX) * VMAX; // Converte para volts
   
-  Serial.print("ADC: ");
-  Serial.print(adcValue);
-  Serial.print(" | Tensão: ");
-  Serial.print(voltage, 3); // Mostra 3 casas decimais
-  Serial.println(" V");
+  // Serial.print("ADC: ");
+  // Serial.print(adcValue);
+  // Serial.print(" | Tensão: ");
+  // Serial.print(voltage, 3); // Mostra 3 casas decimais
+  // Serial.println(" V");
 
   float angle = (adcValue/ADC_MAX) * ANGLE_MAX; // Converte para angulos
 
@@ -152,9 +164,9 @@ void loop() {
   if(angle <= (ANGLE_MIN+ANGLE_ERRO))
     angle = ANGLE_MIN;
 
-  Serial.print("ANGLE: ");
-  Serial.println(angle);
-  Serial.println();
+  // Serial.print("ANGLE: ");
+  // Serial.println(angle);
+  // Serial.println();
 
   servo_thumb.write(angle);
   delay(500);
