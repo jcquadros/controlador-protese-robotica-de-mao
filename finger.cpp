@@ -19,7 +19,7 @@ int Finger::map_percentage_to_angle(int percentage) const {
 
 void Finger::send_percentage(const int percentage) {
   int angle = map_percentage_to_angle(percentage);
-  send_angle(angle);
+  send_angle(angle, false);
 
   Serial.print("Writing to finger (");
   Serial.print(name);
