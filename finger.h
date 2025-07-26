@@ -17,13 +17,14 @@ struct Finger {
   String name;
   int min_angle;
   int max_angle;
+  bool is_inverted;
   int port;
   Servo servo;
 
   void initialize_servo(const int min = 500, const int max = 2400, const int period = 50);
   int map_percentage_to_angle(int percentage) const;
   void send_percentage(const int percentage);
-  void send_angle(int angle);
+  void send_angle(int angle, bool log = true);
 };
 
 #endif // FINGER_H

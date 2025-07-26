@@ -30,11 +30,11 @@ const float ANGLE_ERRO = 10;
 Hand hand {
   .finger_count = 5,
   .fingers = {
-    { .id = THUMB, .name= "Thumb", .min_angle = 0, .max_angle = 130, .port = 32 },
-    { .id = INDEX_FINGER, .name= "Index Finger", .min_angle = 0, .max_angle = 130, .port = 33 },
-    { .id = MIDDLE_FINGER, .name= "Middle Finger", .min_angle = 0, .max_angle = 130, .port = 25 },
-    { .id = RING_FINGER, .name= "Ring Finger", .min_angle = 0, .max_angle = 130, .port = 26 },
-    { .id = PINKY_FINGER, .name= "Pinky Finger", .min_angle = 0, .max_angle = 130, .port = 27 }
+    { .id = THUMB, .name= "Thumb", .min_angle = 0, .max_angle = 130, .is_inverted = false, .port = 32 },
+    { .id = INDEX_FINGER, .name= "Index Finger", .min_angle = 0, .max_angle = 130, .is_inverted = false, .port = 33 },
+    { .id = MIDDLE_FINGER, .name= "Middle Finger", .min_angle = 0, .max_angle = 130, .is_inverted = true, .port = 25 },
+    { .id = RING_FINGER, .name= "Ring Finger", .min_angle = 0, .max_angle = 130, .is_inverted = true, .port = 26 },
+    { .id = PINKY_FINGER, .name= "Pinky Finger", .min_angle = 0, .max_angle = 130, .is_inverted = true, .port = 27 }
   }
 };
 
