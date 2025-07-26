@@ -27,92 +27,27 @@ const float ANGLE_ERRO = 10;
 
 
 // Configurações da mão
-
-#define FINGER_COUNT 5
-
-#define THUMB_PORT 32
-#define INDEX_FINGER_PORT 33
-#define MIDDLE_FINGER_PORT 25
-#define RING_FINGER_PORT 26
-#define PINKY_FINGER_PORT 27
-
-enum FingersEnum {
-  THUMB = 0,
-  INDEX_FINGER = 1,
-  MIDDLE_FINGER = 2,
-  RING_FINGER = 3,
-  PINKY_FINGER = 4
-};
-
-const Hand hand {
-  FINGER_COUNT,
-  {
-    {THUMB, 0, 180},
-    {INDEX_FINGER, 0, 180},
-    {MIDDLE_FINGER, 0, 180},
-    {RING_FINGER, 0, 180},
-    {PINKY_FINGER, 0, 180}
+Hand hand {
+  .finger_count = 5,
+  .fingers = {
+    { .id = THUMB, .name= "Thumb", .min_angle = 0, .max_angle = 130, .port = 32 },
+    { .id = INDEX_FINGER, .name= "Index Finger", .min_angle = 0, .max_angle = 130, .port = 33 },
+    { .id = MIDDLE_FINGER, .name= "Middle Finger", .min_angle = 0, .max_angle = 130, .port = 25 },
+    { .id = RING_FINGER, .name= "Ring Finger", .min_angle = 0, .max_angle = 130, .port = 26 },
+    { .id = PINKY_FINGER, .name= "Pinky Finger", .min_angle = 0, .max_angle = 130, .port = 27 }
   }
 };
-
-
-Servo servo_thumb;
-Servo servo_index_finger;
-Servo servo_middle_finger;
-Servo servo_ring_finger;
-Servo servo_pinky_finger;
-
-
-void control_finger(enum FingersEnum finger, int percentage) {
-  const Finger& fingerConfig = hand.fingers[finger];
-  const int angle = fingerConfig.mapPercentageToAngle(percentage);
-
-  switch(finger) {
-    case THUMB:
-      Serial.print("Writing to thumb value: ");
-      Serial.println(angle);
-      servo_thumb.write(angle);
-      break;
-    case INDEX_FINGER:
-      Serial.print("Writing to index finger value: ");
-      Serial.println(angle);
-      servo_index_finger.write(angle);
-      break;
-    case MIDDLE_FINGER:
-      Serial.print("Writing to middle finger value: ");
-      Serial.println(angle);
-      servo_middle_finger.write(angle);
-      break;
-    case RING_FINGER:
-      Serial.print("Writing to ring finger value: ");
-      Serial.println(angle);
-      servo_ring_finger.write(angle);
-      break;
-    case PINKY_FINGER:
-      Serial.print("Writing to pinky finger value: ");
-      Serial.println(angle);
-      servo_pinky_finger.write(angle);
-      break;
-  }
-}
-
-void control_hand(HandCommand command) {
-  control_finger(THUMB, command.thumb);
-  control_finger(INDEX_FINGER, command.index);
-  control_finger(MIDDLE_FINGER, command.middle);
-  control_finger(RING_FINGER, command.ring);
-  control_finger(PINKY_FINGER, command.pinky);
-}
 
 
 class BLECustomCallbacks : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *characteristic) {
     auto value = characteristic->getValue();
-    Serial.print("Received value: ");
+
+    Serial.print("Received command: ");
     Serial.println(value.c_str());
 
     auto command = HandCommand::fromJson(value);
-    control_hand(command);
+    hand.control_hand(command);
   }
 };
 
@@ -122,23 +57,9 @@ void setup() {
   
   // Alocar timer disponível (0 a 3)
   // ESP32PWM::allocateTimer(0);
-
-  // Configurar frequência de operação dos servos
-  servo_thumb.setPeriodHertz(50);
-  servo_index_finger.setPeriodHertz(50);
-  servo_middle_finger.setPeriodHertz(50);
-  servo_ring_finger.setPeriodHertz(50);
-  servo_pinky_finger.setPeriodHertz(50);
-
-  // Associar cada servo a um pino e definir pulso mínimo e máximo (em microssegundos)
-  // 0° = 500us, 180° = 2400us
-  servo_thumb.attach(THUMB_PORT, 500, 2400);
-  servo_index_finger.attach(INDEX_FINGER_PORT, 500, 2400);
-  servo_middle_finger.attach(MIDDLE_FINGER_PORT, 500, 2400);
-  servo_ring_finger.attach(RING_FINGER_PORT, 500, 2400);
-  servo_pinky_finger.attach(PINKY_FINGER_PORT, 500, 2400);
-
   analogReadResolution(12);
+
+  hand.initialize_servos();
 
   // Configurações do servidor Bluetooth
   Serial.println("Starting BLE work!");
@@ -163,8 +84,8 @@ void setup() {
 }
 
 void loop() {
-  int adcValue = analogRead(POT_PIN); // Lê valor ADC (0–4095)
-  float voltage = (adcValue/ADC_MAX) * VMAX; // Converte para volts
+  // int adcValue = analogRead(POT_PIN); // Lê valor ADC (0–4095)
+  // float voltage = (adcValue/ADC_MAX) * VMAX; // Converte para volts
   
   // Serial.print("ADC: ");
   // Serial.print(adcValue);
@@ -172,18 +93,19 @@ void loop() {
   // Serial.print(voltage, 3); // Mostra 3 casas decimais
   // Serial.println(" V");
 
-  float angle = (adcValue/ADC_MAX) * ANGLE_MAX; // Converte para angulos
+  // float angle = (adcValue/ADC_MAX) * ANGLE_MAX; // Converte para angulos
 
-  if(angle >= (ANGLE_MAX-ANGLE_ERRO))
-    angle = ANGLE_MAX;
+  // if(angle >= (ANGLE_MAX-ANGLE_ERRO))
+  //   angle = ANGLE_MAX;
 
-  if(angle <= (ANGLE_MIN+ANGLE_ERRO))
-    angle = ANGLE_MIN;
+  // if(angle <= (ANGLE_MIN+ANGLE_ERRO))
+  //   angle = ANGLE_MIN;
 
   // Serial.print("ANGLE: ");
   // Serial.println(angle);
   // Serial.println();
 
-  servo_thumb.write(angle);
-  delay(500);
+  // Finger& finger = (Finger&) hand.fingers[THUMB];
+  // finger.sendAngle(angle);
+  // delay(500);
 }

@@ -2,18 +2,28 @@
 #define FINGER_H
 
 #include <Arduino.h>
+#include <ESP32Servo.h>
+
+enum FingersIds {
+  THUMB = 0,
+  INDEX_FINGER = 1,
+  MIDDLE_FINGER = 2,
+  RING_FINGER = 3,
+  PINKY_FINGER = 4
+};
 
 struct Finger {
   int id;
-  int max_angle;
+  String name;
   int min_angle;
+  int max_angle;
+  int port;
+  Servo servo;
 
-  int mapPercentageToAngle(int percentage) const {
-    if (percentage < 0) percentage = 0;
-    if (percentage > 100) percentage = 100;
-
-    return (int) (min_angle + (max_angle - min_angle) * (percentage / 100.0f)); 
-  }
+  void initialize_servo(const int min = 500, const int max = 2400, const int period = 50);
+  int map_percentage_to_angle(int percentage) const;
+  void send_percentage(const int percentage);
+  void send_angle(int angle);
 };
 
-#endif
+#endif // FINGER_H

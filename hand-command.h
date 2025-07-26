@@ -3,8 +3,7 @@
 
 #include <Arduino.h>
 
-class HandCommand {
-public:
+struct HandCommand {
   int thumb;
   int index;
   int middle;
