@@ -2,6 +2,7 @@
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
+#include "hand-command.h"
 
 #define THUMB_PORT 32
 #define INDEX_FINGER_PORT 33
@@ -60,6 +61,8 @@ class MyCallbacks : public BLECharacteristicCallbacks {
     auto value = characteristic->getValue();
     Serial.print("Received value: ");
     Serial.println(value.c_str());
+
+    auto command = HandCommand::fromJson(value);
   }
 };
 
