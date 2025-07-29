@@ -61,4 +61,7 @@ void setup() {
   Serial.println("Characteristic defined! Now you can read it in your phone!");
 }
 
-void loop() {}
+void loop() {
+  // The loop is intentionally left empty because this is a BLE-only application.
+  // All functionality is handled through BLE callbacks and does not require periodic tasks.
+}
