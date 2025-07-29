@@ -1,6 +1,6 @@
 #include "hand.h"
 
-void Hand::initialize_servos(const int min, const int max, const int period) {
+void Hand::init(const int min, const int max, const int period) {
   for (int i = 0; i < finger_count; i++) {
     Finger& finger = fingers[i];
     finger.initialize_servo(min, max, period);
