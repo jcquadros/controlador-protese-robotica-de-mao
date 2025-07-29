@@ -5,21 +5,6 @@
 #include "hand-command.h"
 #include "hand.h"
 
-// Definindo os pinos
-#define POT_PIN 25
-
-const float POT = 10;
-const float R = 1;
-const float VREF = 3.3;
-const float ADC_RESOLUTION = 4095;
-
-const float VMAX = (VREF * (POT/(POT+R)));
-const float ADC_MAX = (VMAX/VREF)*ADC_RESOLUTION;
-
-const float ANGLE_MIN = 0;
-const float ANGLE_MAX = 130;
-const float ANGLE_ERRO = 10;
-
 
 // Configurações do Bluetooth
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -38,7 +23,6 @@ Hand hand {
   }
 };
 
-
 class BLECustomCallbacks : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic *characteristic) {
     auto value = characteristic->getValue();
@@ -54,10 +38,6 @@ class BLECustomCallbacks : public BLECharacteristicCallbacks {
 
 void setup() {
   Serial.begin(115200);
-  
-  // Alocar timer disponível (0 a 3)
-  // ESP32PWM::allocateTimer(0);
-  analogReadResolution(12);
 
   hand.initialize_servos();
 
@@ -71,9 +51,7 @@ void setup() {
     BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
   );
   pCharacteristic->setCallbacks(new BLECustomCallbacks());
-  // pCharacteristic->setValue("Hello World says Neil");
   pService->start();
-  // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true);
@@ -83,29 +61,4 @@ void setup() {
   Serial.println("Characteristic defined! Now you can read it in your phone!");
 }
 
-void loop() {
-  // int adcValue = analogRead(POT_PIN); // Lê valor ADC (0–4095)
-  // float voltage = (adcValue/ADC_MAX) * VMAX; // Converte para volts
-  
-  // Serial.print("ADC: ");
-  // Serial.print(adcValue);
-  // Serial.print(" | Tensão: ");
-  // Serial.print(voltage, 3); // Mostra 3 casas decimais
-  // Serial.println(" V");
-
-  // float angle = (adcValue/ADC_MAX) * ANGLE_MAX; // Converte para angulos
-
-  // if(angle >= (ANGLE_MAX-ANGLE_ERRO))
-  //   angle = ANGLE_MAX;
-
-  // if(angle <= (ANGLE_MIN+ANGLE_ERRO))
-  //   angle = ANGLE_MIN;
-
-  // Serial.print("ANGLE: ");
-  // Serial.println(angle);
-  // Serial.println();
-
-  // Finger& finger = (Finger&) hand.fingers[THUMB];
-  // finger.sendAngle(angle);
-  // delay(500);
-}
+void loop() {}
