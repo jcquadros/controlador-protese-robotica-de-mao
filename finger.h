@@ -27,4 +27,4 @@ struct Finger {
   void send_angle(int angle, bool log = true);
 };
 
-#endif // FINGER_H
+#endif

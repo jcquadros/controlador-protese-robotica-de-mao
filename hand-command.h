@@ -2,6 +2,7 @@
 #define HAND_COMMAND_H
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
 struct HandCommand {
   int thumb;
