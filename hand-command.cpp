@@ -1,5 +1,4 @@
 #include "hand-command.h"
-#include <ArduinoJson.h>
 
 HandCommand::HandCommand(int t, int i, int m, int r, int p)
     : thumb(t), index(i), middle(m), ring(r), pinky(p) {}
