@@ -17,6 +17,19 @@ class BLECustomCallbacks : public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *characteristic) override;
 };
 
+
+class BLEServerCustomCallbacks : public BLEServerCallbacks {
+  private:
+    BLEServer *server;
+    BLEAdvertising *advertising;
+    
+  public:
+    BLEServerCustomCallbacks(BLEServer *server, BLEAdvertising *advertising);
+    void onConnect(BLEServer* server) override;
+    void onDisconnect(BLEServer* server) override;
+};
+
+
 class BluetoothService {
   public:
     static void init(String name, String characteristic_uuid, String service_uuid, void (*on_command_received)(HandCommand));
