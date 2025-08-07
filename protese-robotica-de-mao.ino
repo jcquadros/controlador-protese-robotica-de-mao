@@ -14,8 +14,8 @@ Hand hand {
   .finger_count = 5,
   .fingers = {
     { .id = THUMB, .name= "Thumb", .min_angle = 0, .max_angle = 130, .is_inverted = false, .port = 13 },
-    { .id = INDEX_FINGER, .name= "Index Finger", .min_angle = 0, .max_angle = 160, .is_inverted = false, .port = 12 },
-    { .id = MIDDLE_FINGER, .name= "Middle Finger", .min_angle = 0, .max_angle = 120, .is_inverted = true, .port = 27 },
+    { .id = INDEX_FINGER, .name= "Index Finger", .min_angle = 0, .max_angle = 140, .is_inverted = false, .port = 12 },
+    { .id = MIDDLE_FINGER, .name= "Middle Finger", .min_angle = 0, .max_angle = 160, .is_inverted = true, .port = 27 },
     { .id = RING_FINGER, .name= "Ring Finger", .min_angle = 0, .max_angle = 120, .is_inverted = true, .port = 25 },
     { .id = PINKY_FINGER, .name= "Pinky Finger", .min_angle = 0, .max_angle = 100, .is_inverted = true, .port = 32 }
   }
@@ -27,7 +27,13 @@ void setup() {
 
   hand.init();
 
-  BluetoothService::init(DEVICE_NAME, CHARACTERISTIC_UUID, SERVICE_UUID, [](HandCommand command) { hand.control_hand(command); });
+  BluetoothService::init(
+    DEVICE_NAME,
+    CHARACTERISTIC_UUID,
+    SERVICE_UUID,
+    [](HandCommand command) { hand.control_hand(command); },
+    [](HandCommand command) { hand.control_hand(command); }
+  );
 }
 
 void loop() {

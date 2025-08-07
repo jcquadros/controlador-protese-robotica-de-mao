@@ -5,6 +5,9 @@ void Hand::init(const int min, const int max, const int period) {
     Finger& finger = fingers[i];
     finger.initialize_servo(min, max, period);
   }
+
+  // Open hand on start
+  control_hand(HandCommand());
 }
 
 void Hand::control_finger(enum FingersIds fingerId, int percentage) {

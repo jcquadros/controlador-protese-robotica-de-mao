@@ -20,11 +20,17 @@ class BLECustomCallbacks : public BLECharacteristicCallbacks {
 
 class BLEServerCustomCallbacks : public BLEServerCallbacks {
   private:
+    void (*on_bluetooth_disconnected)(HandCommand);
     BLEServer *server;
     BLEAdvertising *advertising;
     
   public:
-    BLEServerCustomCallbacks(BLEServer *server, BLEAdvertising *advertising);
+    BLEServerCustomCallbacks(
+      BLEServer *server,
+      BLEAdvertising *advertising,
+      void (*on_bluetooth_disconnected)(HandCommand)
+    );
+    
     void onConnect(BLEServer* server) override;
     void onDisconnect(BLEServer* server) override;
 };
@@ -32,7 +38,13 @@ class BLEServerCustomCallbacks : public BLEServerCallbacks {
 
 class BluetoothService {
   public:
-    static void init(String name, String characteristic_uuid, String service_uuid, void (*on_command_received)(HandCommand));
+    static void init(
+      String name,
+      String characteristic_uuid,
+      String service_uuid,
+      void (*on_command_received)(HandCommand),
+      void (*on_bluetooth_disconnected)(HandCommand)
+    );
 };
 
 #endif
