@@ -1,4 +1,5 @@
 #include "movement-controller.h"
+#include "hand-command.h"
 
 MovementController::MovementController(Hand& hand, int (*readPressure)(), int pressureLimit)
     : hand(hand), 
@@ -10,8 +11,9 @@ MovementController::MovementController(Hand& hand, int (*readPressure)(), int pr
 {}
 
 void MovementController::init() {
-    // Inicializa o alvo com a posição atual da mão
-    targetCommand = hand.currentCommand;
+    targetCommand = HandCommand();
+    hand.control_hand(targetCommand);
+
     Serial.println("Movement controller initialized.");
 }
 
@@ -37,6 +39,7 @@ int MovementController::getNextStep(int current, int target, bool isPressureExce
         return min(current + stepSize, target);
     } else { // isOpening
         // Se está abrindo, o movimento é sempre permitido.
+        current = stepSize;
         return max(current - stepSize, target);
     }
 }
