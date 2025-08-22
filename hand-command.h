@@ -15,6 +15,7 @@ struct HandCommand {
 
   static HandCommand fromJson(const String& jsonString);
   String toJson() const;
+  bool equals(const HandCommand& other) const;
 };
 
 #endif

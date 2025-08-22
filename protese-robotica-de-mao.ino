@@ -1,14 +1,14 @@
 #include "bluetooth-service.h"
 #include "hand.h"
 #include "hand-command.h"
-
+#include "movement-controller.h"
 
 // Configurações do Bluetooth
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define DEVICE_NAME "Bucky Barnes Arm"
 #define FORCE_SENSOR_PIN 36
-#define FORCE_DETECTION 3000
+#define FORCE_DETECTION_LIMIT 2000
 
 // Configurações da mão
 Hand hand {
@@ -23,29 +23,28 @@ Hand hand {
 };
 
 
+int readForceSensor() {
+  return analogRead(FORCE_SENSOR_PIN);
+}
+
+MovementController movementController(hand, readForceSensor, FORCE_DETECTION_LIMIT);
+
 void setup() {
   Serial.begin(115200);
 
   analogSetAttenuation(ADC_11db);
-
   hand.init();
+  movementController.init();
 
   BluetoothService::init(
     DEVICE_NAME,
     CHARACTERISTIC_UUID,
     SERVICE_UUID,
-    [](HandCommand command) { hand.control_hand(command); },
-    [](HandCommand command) { hand.control_hand(command); }
+    [](HandCommand command) { movementController.setTargetPosition(command); },
+    [](HandCommand command) { movementController.setTargetPosition(command); }
   );
 }
 
 void loop() {
-  int analogReading = analogRead(FORCE_SENSOR_PIN);
-
-  if (analogReading > FORCE_DETECTION) {
-    Serial.print("Object detect: ");
-    Serial.println(analogReading);
-  }
-  // The loop is intentionally left empty because this is a BLE-only application.
-  // All functionality is handled through BLE callbacks and does not require periodic tasks.
+  movementController.update();
 }

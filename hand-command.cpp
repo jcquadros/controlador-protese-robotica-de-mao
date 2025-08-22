@@ -34,3 +34,11 @@ String HandCommand::toJson() const {
   serializeJson(doc, output);
   return output;
 }
+
+bool HandCommand::equals(const HandCommand& other) const {
+  return thumb == other.thumb &&
+          index == other.index &&
+          middle == other.middle &&
+          ring == other.ring &&
+          pinky == other.pinky;
+}
