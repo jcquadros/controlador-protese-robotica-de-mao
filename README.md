@@ -6,6 +6,8 @@
 
 Mão robótica impressa em 3D, controlada por ESP32 e servomotores, desenvolvida para o projeto das disciplinas PIC SW e PIC HW.
 
+Repositório princial: [https://github.com/Propato/trabalhos-Ufes-PIC-II](https://github.com/Propato/trabalhos-Ufes-PIC-II)
+
 ## Índice
 
 - [Visão Geral](#visão-geral)
