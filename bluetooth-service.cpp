@@ -14,8 +14,12 @@ void BLECustomCallbacks::onWrite(BLECharacteristic *characteristic) {
 }
 
 
-BLEServerCustomCallbacks::BLEServerCustomCallbacks(BLEServer *server, BLEAdvertising *advertising) 
-  : server(server), advertising(advertising) {}
+BLEServerCustomCallbacks::BLEServerCustomCallbacks(
+  BLEServer *server,
+  BLEAdvertising *advertising,
+  void (*on_bluetooth_disconnected)(HandCommand)
+) 
+  : server(server), advertising(advertising), on_bluetooth_disconnected(on_bluetooth_disconnected) {}
 
 void BLEServerCustomCallbacks::onConnect(BLEServer* server) {
   Serial.println("Device connected");
@@ -23,19 +27,29 @@ void BLEServerCustomCallbacks::onConnect(BLEServer* server) {
 
 void BLEServerCustomCallbacks::onDisconnect(BLEServer* server) {
   Serial.println("Device disconnected - restarting advertising");
+  
+  // Open hand after client disconnects
+  on_bluetooth_disconnected(HandCommand());
+  
   // Restart advertising when device disconnects
   advertising->start();
   Serial.println("Advertising restarted");
 }
 
 
-void BluetoothService::init(String name, String characteristic_uuid, String service_uuid, void (*on_command_received)(HandCommand)) {
+void BluetoothService::init(
+  String name,
+  String characteristic_uuid,
+  String service_uuid,
+  void (*on_command_received)(HandCommand),
+  void (*on_bluetooth_disconnected)(HandCommand)
+) {
   Serial.println("Starting BLE server!");
   
   BLEDevice::init(name);
   BLEServer *server = BLEDevice::createServer();
   BLEAdvertising *advertising = BLEDevice::getAdvertising();
-  server->setCallbacks(new BLEServerCustomCallbacks(server, advertising));
+  server->setCallbacks(new BLEServerCustomCallbacks(server, advertising, on_bluetooth_disconnected));
 
   BLEService *service = server->createService(service_uuid);
   BLECharacteristic *characteristic = service->createCharacteristic(
