@@ -1,4 +1,4 @@
-# Prótese Robótica de Mão
+# Controlador da Prótese Robótica de Mão
 
 <p align="center">
   <img src="https://skillicons.dev/icons?i=vscode,cpp" />
@@ -6,12 +6,11 @@
 
 Mão robótica impressa em 3D, controlada por ESP32 e servomotores, desenvolvida para o projeto das disciplinas PIC SW e PIC HW.
 
-![Imagem da Prótese](https://via.placeholder.com/600x400?text=Imagem+da+Prótese+Robótica+de+Mão)
-
 ## Índice
 
 - [Visão Geral](#visão-geral)
 - [Requisitos de Hardware](#requisitos-de-hardware)
+- [Esquemático do Circuito](#esquemático-do-circuito)
 - [Bibliotecas Necessárias](#bibliotecas-necessárias)
 - [Configuração do Ambiente](#configuração-do-ambiente)
   - [Instalação da Arduino IDE](#instalação-da-arduino-ide)
@@ -35,6 +34,16 @@ Este projeto consiste em uma prótese robótica de mão controlada por um ESP32,
 - Cabos jumper
 - Fonte de alimentação para os servomotores (5V)
 - Bateria ou fonte de energia portátil (opcional, para uso móvel)
+
+## Esquemático do Circuito
+
+O esquemático abaixo mostra as conexões entre o ESP32 e os cinco servomotores que controlam os dedos da prótese. Cada servomotor está conectado a um pino GPIO específico do ESP32 e recebe alimentação externa de 5V.
+
+<p align="center">
+  <img src="./assets/schematics.png" alt="Esquemático do Circuito"/>
+</p>
+
+*Figura 1: Esquemático do circuito mostrando as conexões entre o ESP32-WROOM-32 e os cinco servomotores para controle dos dedos da prótese.*
 
 ## Bibliotecas Necessárias
 
